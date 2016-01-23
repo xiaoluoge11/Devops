@@ -1,0 +1,31 @@
+{% include "public/header.html" %}
+<div style="width:100%;height:500px;text-align: center;">
+    <br><br><br>
+    <span style="font-size:35px;line-height: 35px; color:green;">{{ msg }}</span><br>
+    <span></span>
+</div>
+
+{% include "public/footer.html" %}
+<script>
+    var location_url;
+    var time_out ;
+    var msg ;
+
+    {% if timeout %}
+        time_out = "{{ timeout }}" ;
+    {% else %}
+        time_out = 3;
+    {% endif %}
+
+    {% if url %}
+        location_url = "{{ url }}" ;
+    {% else %}
+        location_url = "/";
+    {% endif %}
+
+
+    setTimeout(function(){
+        window.location.href=location_url
+    }, time_out )
+</script>
+

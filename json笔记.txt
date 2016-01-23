@@ -1,0 +1,22 @@
+Python自带的json.dumps方法序列化数据时候如果格式化的数据中有datetime类型数据时候会提示错误
+TypeError: datetime.datetime(2012, 12, 12, 15, 47, 15) is not JSON serializable
+
+官方文档cls：
+To use a custom JSONEncoder subclass (e.g. one that overrides the default() method to serialize additional types), 
+specify it with the cls kwarg; otherwise JSONEncoder is used.
+
+写一个cls类，不然在导出时间会遇到问题：
+
+
+class CJsonEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.strftime('%Y-%m-%d %H:%M:%S')
+        elif isinstance(obj, date):
+            return obj.strftime('%Y-%m-%d')
+        else:
+            return json.JSONEncoder.default(self, obj)
+
+
+引用：
+return json.dumps(ret,cls=CJsonEncoder)

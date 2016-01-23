@@ -1,0 +1,64 @@
+{% include "public/header.html" %}
+{% include "public/cmdb_left.html" %}
+<div style="float:left;width:75%;margin-left:10px;margin-top:20px;">
+<a href="/resources/server/vmadd" class="btn btn-default btn-sm active" role="button">添加虚拟机</a>
+<a href="/resources/server/add" class="btn btn-default btn-sm active" role="button">添加宿主机</a>
+<br><span style="line-height: 40px;heigth:40px;">共 <strong>{{ num }}</strong> 台虚拟机</span>
+
+<div style="width:100%;overflow:hidden;margin-top:10px;overflow-x:scroll;box-sizing:border-box;border: 1px solid #D5D5D5;border-radius: 4px;padding:2px;">
+    <table class="table table-hover">
+
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>ST号</th>
+          <th>操作系统</th>
+          <th>系统版本</th>
+          <th style="width:100px;">主机名</th>
+          <th>内网IP</th>
+          <th>MAC地址</th>
+          <th>IP信息</th>
+          <th>CPU</th>
+          <th>硬盘</th>
+          <th>内存</th>
+          <th>服务器状态</th>
+          <th>备注</th>
+          <th>业务线</th>
+          <th>产品线</th>
+          <th>故障处理人</th>
+          <th>开发接口人</th>
+          <th>运维接口人</th>
+          <th>上次检测时间</th>
+        </tr>
+      </thead>
+      <tbody>
+
+            {% for server in servers %}
+            <tr>
+                <td> {{ loop.index }} </td>
+                <td> {{ server.st }} </td>
+                <td> {{ server.os_type }} </td>
+                <td> {{ server.os_version }} </td>
+                <td> {{ server.hostname }} </td>
+                <td> {{ server.inner_ip }} </td>
+                <td> {{ server.mac_address }} </td>
+                <td> {{ server.ipinfo }} </td>
+                <td> {{ server.server_cpu }} </td>
+                <td> {{ server.server_disk }} </td>
+                <td> {{ server.server_mem }} </td>
+                <td> {{ server.status }} </td>
+                <td> {{ server.remark }} </td>
+                <td> {{ product[server.service_id] }} </td>
+                <td> {{ product[server.server_purpose] }} </td>
+                <td> {{ server.trouble_resolve }} </td>
+                <td> {{ server.dev_interface }} </td>
+                <td> {{ server.op_interface }} </td>
+                <td> {{ server.check_update_time }} </td>
+            </tr>
+            {% endfor %}
+
+      </tbody>
+    </table>
+</div>
+</div>
+{% include "public/footer.html" %}

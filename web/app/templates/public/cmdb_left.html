@@ -1,0 +1,104 @@
+<style>
+#cmdb_left {float:left;}
+#cmdb_left .col-md-2{width:200px;}
+#cmdb_left #main-nav {margin-left: 1px;}
+#cmdb_left #main-nav.nav-tabs.nav-stacked > li > a {padding: 10px 8px;font-size: 12px;font-weight: 600;color: #4A515B;background: #E9E9E9;background: -moz-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%); background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FAFAFA), color-stop(100%,#E9E9E9));background: -webkit-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%); background: -o-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%); background: -ms-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%);background: linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%);filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#E9E9E9'); -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#E9E9E9')"; border: 1px solid #D5D5D5; border-radius: 4px;}
+#cmdb_left #main-nav.nav-tabs.nav-stacked > li > a > span { color: #4A515B;}
+#cmdb_left #main-nav.nav-tabs.nav-stacked > li.active > a, #main-nav.nav-tabs.nav-stacked > li > a:hover { color: #FFF; background: #3C4049; background: -moz-linear-gradient(top, #4A515B 0%, #3C4049 100%); background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4A515B), color-stop(100%,#3C4049)); background: -webkit-linear-gradient(top, #4A515B 0%,#3C4049 100%); background: -o-linear-gradient(top, #4A515B 0%,#3C4049 100%); background: -ms-linear-gradient(top, #4A515B 0%,#3C4049 100%); background: linear-gradient(top, #4A515B 0%,#3C4049 100%); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4A515B', endColorstr='#3C4049'); -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#4A515B', endColorstr='#3C4049')"; border-color: #2B2E33; }
+#cmdb_left #main-nav.nav-tabs.nav-stacked > li.active > a, #main-nav.nav-tabs.nav-stacked > li > a:hover > span { color: #FFF; }
+#cmdb_left #main-nav.nav-tabs.nav-stacked > li { margin-bottom: 4px; }
+/*定义二级菜单样式*/
+#cmdb_left .secondmenu a {font-size: 10px; color: #4A515B;text-align: center;}
+#cmdb_left .navbar-static-top {background-color: #212121;margin-bottom: 5px;}
+#cmdb_left .navbar-brand { background: url('') no-repeat 10px 8px; display: inline-block; vertical-align: middle; padding-left: 50px; color: #fff; }
+/*控制菜单箭头*/
+#cmdb_left .nav-header.collapsed > span.glyphicon-chevron-toggle:before { content: "\e114";}
+#cmdb_left .nav-header > span.glyphicon-chevron-toggle:before { content: "\e113";}
+#cmdb_left .secondmenu a {font-size: 12px;color: #4A515B;text-align: center;}
+
+#cmdb_left .secondmenu li.active { background-color: #eee; border-color: #428bca;}
+</style>
+<div id="cmdb_left">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-2">
+                <ul id="main-nav" class="nav nav-tabs nav-stacked" style="">
+                    <li class="active">
+                        <a href="#">
+                            <i class="glyphicon glyphicon-th-large"></i>
+                            首页         
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#systemSetting" class="nav-header" data-toggle="collapse" aria-expanded="true">
+                          <i class="glyphicon glyphicon-cog"></i>
+                          IT资产
+                             <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
+                        </a>
+                        {% if show_resource %}
+                        <ul id="systemSetting" class="nav nav-list collapse secondmenu in">
+                        {% else %}
+                        <ul id="systemSetting" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                        {% endif %}
+                          <li {% if show_serverlist %}class="active"{% endif %}><a href="/resource/idc"><i class="glyphicon glyphicon-tree-conifer"></i> 机房</a></li>
+                          
+                            <li {% if show_vmlist %}class="active"{% endif %}><a href="/resource/server_list"><i class="glyphicon glyphicon-th-list"></i> 服务器列表</a></li>
+                            <li><a href="#"><i class="glyphicon glyphicon-asterisk"></i> 角色管理</a></li>
+                          <li><a href="#"><i class="glyphicon glyphicon-edit"></i> 修改密码</a></li>
+                          <li><a href="#"><i class="glyphicon glyphicon-eye-open"></i> 日志查看</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        {% if show  %}
+                        <a href="#test" class="nav-header" data-toggle="collapse" aria-expanded="true">
+                        {% else %}
+                        <a href="#test" class="nav-header collapsed" data-toggle="collapse">
+                        {% endif %}
+                          <i class="glyphicon glyphicon-cog"></i>
+                          监控配置
+                             <span class="pull-right glyphicon glyphicon-chevron-toggle"></span>
+                        </a>
+                        {% if show  %}
+                        <ul id="test" class="nav nav-list collapse secondmenu in">
+                        {% else %}
+                        <ul id="test" class="nav nav-list collapse secondmenu" style="height: 0px;">
+                        {% endif %}
+                          <li class="active"><a href="/monitor/zabbix/boundtemplate"><i class="glyphicon glyphicon-user"></i>绑定zabbix模板</a></li>
+                          <li><a href="#"><i class="glyphicon glyphicon-th-list"></i> 菜单管理</a></li>
+                          <li><a href="#"><i class="glyphicon glyphicon-asterisk"></i> 角色管理</a></li>
+                          <li><a href="#"><i class="glyphicon glyphicon-edit"></i> 修改密码</a></li>
+                          <li><a href="#"><i class="glyphicon glyphicon-eye-open"></i> 日志查看</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="glyphicon glyphicon-credit-card"></i>
+                            物料管理        
+                        </a>
+                    </li>
+ 
+                    <li>
+                        <a href="#">
+                            <i class="glyphicon glyphicon-globe"></i>
+                            分发配置
+                            <span class="label label-warning pull-right">5</span>
+                        </a>
+                    </li>
+ 
+                    <li>
+                        <a href="#">
+                            <i class="glyphicon glyphicon-calendar"></i>
+                            图表统计
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="glyphicon glyphicon-fire"></i>
+                            关于系统
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,59 @@
+{% include "public/header.html" %}
+{% include "public/cmdb_left.html" %}
+<style>
+    .NoNewline {  word-break: keep-all;  }
+</style>
+<div class="right_content">
+    <div style="width:100%;height:auto;">
+        {% include "public/server_list_type.html" %}
+    </div>
+    <br><span style="line-height: 40px;heigth:40px;">共 <strong>{{ num }}</strong> 台物理机</span>
+<div id="tab_box">
+    <table class="table table-hover table-bordered table-condensed">
+      <thead class="scroll_head">
+        <tr >
+            <th>#</th>
+            <th>制造商</th>
+            <th>服务器型号</th>
+            <th>主机名</th>
+            <th>内网IP</th>
+            <th>MAC地址</th>
+            <th>ip信息</th>
+            <th>操作系统</th>
+            <th>系统版本</th>
+            <th>CPU型号</th>
+            <th>硬盘信息</th>
+            <th>内存信息</th>
+            <th>服务器状态</th>
+        </tr>
+      </thead>
+      <tbody >
+            {% for server in servers %}
+                <tr>
+                <td> {{ loop.index }} </td>
+                <td> {{ server.manufacturers }} </td>
+                <td> {{ server.server_type }} </td>
+                <td> {{ server.hostname }} </td>
+                <td> {{ server.inner_ip }} </td>
+                <td> {{ server.mac }} </td>
+                <td> {{ server.ipinfo }} </td>
+                <td> {{ server.os_type }} </td>
+                <td> {{ server.os_version }} </td>
+                <td> {{ server.server_cpu }} </td>
+                <td> {{ server.server_disk }} </td>
+                <td> {{ server.server_mem }} </td>
+                <td> {{ server.status }} </td>
+                </tr>
+            {% endfor %}
+
+      </tbody>
+    </table>
+</div>
+</div>
+{% include "public/footer.html" %}
+<script>
+    $(function(){
+        var height = window.innerHeight * 0.8;
+        $("#tab_box").css('height',height)
+    })
+</script>

@@ -1,0 +1,151 @@
+{% extends "public/layout.html" %}
+
+{% block body %}
+    <link rel="stylesheet" href="/static/css/dataTables.bootstrap.css" type="text/css" >
+<style>
+    .NoNewline {  word-break: keep-all;  }
+</style>
+<div class="right_content">
+<a href="/resource/server_add" style="float:right" class="btn btn-default btn-sm active" role="button">添加服务器</a>
+<div id="tab_box" >
+    <table id="table_id" class="table table-striped table-bordered" cellspacing="0" width="100%">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>供应商</th>
+          <th>制造商</th>
+          <th>出厂日期</th>
+          <th>服务器型号</th>
+
+          <th>ST号</th>
+          <th>UUID</th>
+          <th>自定义资产号</th>
+          <th>IDC</th>
+          <th>机柜号</th>
+
+          <th>位置</th>
+          <th>到保日期</th>
+          <th>UPS电源</th>
+          <th>合作商</th>
+          <th>合作方式</th>
+
+          <th>机器上架日期</th>
+          <th>操作系统</th>
+          <th>系统版本</th>
+          <th>主机名</th>
+          <th>内网IP</th>
+
+          <th>MAC地址</th>
+          <th>IP信息</th>
+          <th>CPU型号</th>
+          <th>硬盘信息</th>
+          <th>内存信息</th>
+
+          <th>RAID卡类型</th>
+          <th>RAID卡型号</th>
+          <th>远程管理卡类型</th>
+          <th>远程管理卡IP</th>
+          <th>服务器状态</th>
+
+          <th>备注</th>
+          <th>最后操作时间</th>
+          <th>最后操作人</th>
+          <th>业务线</th>
+          <th>产品线</th>
+
+          <th>故障处理人</th>
+          <th>开发接口人</th>
+          <th>运维接口人</th>
+          <th>上次检测时间</th>
+          <th>电源功率</th>
+          <th>操作</th>
+
+        </tr>
+      </thead>
+      <tbody>
+
+            {% for server in servers %}
+                <tr>
+                <td> {{ loop.index }} </td>
+                <td> {{ server.supplier }} </td>
+                <td> {{ server.manufacturers }} </td>
+                <td> {{ server.manufacture_date }} </td>
+                <td> {{ server.server_type }} </td>
+
+                <td> {{ server.st }} </td>
+                <td> {{ server.uuid }} </td>
+                <td> {{ server.assets_no }} </td>
+                <td> {{ server.idc_id }} </td>
+                <td> {{ server.cabinet_id }} </td>
+
+                <td> {{ server.cabinet_pos }} </td>
+                <td> {{ server.expire }} </td>
+                <td> {% if server.ups %} 有 {% else %} 无 {% endif %} </td>
+                <td> {{ server.parter }} </td>
+                <td> {{ server.parter_type }} </td>
+
+                <td> {{ server.server_up_time }} </td>
+                <td> {{ server.os_type }} </td>
+                <td> {{ server.os_version }} </td>
+                <td> {{ server.hostname }} </td>
+                <td> {{ server.inner_ip }} </td>
+
+                <td> {{ server.mac }} </td>
+                <td> {{ server.ipinfo }} </td>
+                <td> {{ server.server_cpu }} </td>
+                <td> {{ server.server_disk }} </td>
+                <td> {{ server.server_mem }} </td>
+
+                <td> {{ server.raid }} </td>
+                <td> {{ server.raid_card_type }} </td>
+                <td> {{ server.remote_card }} </td>
+                <td> {{ server.remote_cardip }} </td>
+                <td> {{ server.status }} </td>
+
+                <td> {{ server.remark }} </td>
+                <td> {{ server.last_op_time }} </td>
+                <td> {{ server.last_op_people }} </td>
+                <td> {{ server.service_id }} </td>
+                <td> {{ server.server_purpose }} </td>
+
+                <td> {{ server.trouble_resolve }} </td>
+                <td> {{ server.appop_interface_other }} </td>
+                <td> {{ server.dev_interface }} </td>
+                <td> {{ server.check_update_time }} </td>
+                <td> {{ server.power }} </td>
+                <td> <a href="#{{ server.id }}">修改</a> </td>
+                </tr>
+            {% endfor %}
+
+      </tbody>
+    </table>
+</div>
+</div>
+{% endblock %}
+{% block js %}
+    <script type="text/javascript" charset="utf8" src="/static/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/static/js/dataTables.bootstrap.js"></script>
+
+    <script>
+    $(function(){
+        $('#table_id').DataTable({
+            "sScrollX":"5000px",
+            "language":{
+                    "lengthMenu":"每页 _MENU_ 条记录",
+                    "zeroRecords":"没有找到记录",
+                    "sInfo":"第 _PAGE_ 页 ( 总共 _PAGES_ 页),显示第 _START_ 至 _END_ 项(总共 _TOTAL_ 项目)",
+                    "infoEmpty":"无记录",
+                    "infoFiltered":"(从 _MAX_ 条记录过滤)",
+                    "sSearch":"搜索:",
+                    "oPaginate":{
+                        "sFirst":"首页",
+                        "sPrevious":"上一页",
+                        "sNext":"下一页",
+                        "sLast":"末页"
+                    }
+                }
+        });
+    });
+
+    </script>
+{% endblock %}

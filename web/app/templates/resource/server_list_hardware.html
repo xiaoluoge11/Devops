@@ -1,0 +1,74 @@
+{% include "public/header.html" %}
+{% include "public/cmdb_left.html" %}
+<style>
+    .NoNewline {  word-break: keep-all;  }
+</style>
+<div class="right_content">
+    <div class="list_select_button">
+        {% include "public/server_list_type.html" %}
+    </div>
+<br><span style="line-height: 40px;heigth:40px;">共 <strong>{{ num }}</strong> 台物理机</span>
+<div id="tab_box">
+    <table class="table table-hover table-bordered table-condensed">
+      <thead>
+        <tr>
+            <th>#</th>
+            <th>主机名</th>
+            <th>内网IP</th>
+            <th>ST号</th>
+            <th>制造商</th>
+            <th>服务器型号</th>
+            <th>UPS电源</th>
+            <th>操作系统</th>
+            <th>系统版本</th>
+            <th>CPU型号</th>
+            <th>硬盘信息</th>
+            <th>内存信息</th>
+            <th>RAID卡类型</th>
+            <th>RAID卡型号</th>
+            <th>远程管理卡类型</th>
+            <th>远程管理卡IP</th>
+            <th>业务线</th>
+            <th>产品线</th>
+            <th>是否为虚拟机</th>
+            <th>电源功率</th>
+        </tr>
+      </thead>
+      <tbody>
+
+            {% for server in servers %}
+                <tr>
+                <td> {{ loop.index }} </td>
+                <td> {{ server.hostname }} </td>
+                <td> {{ server.inner_ip }} </td>
+                <td> {{ server.st }} </td>
+                <td> {{ server.manufacturers }} </td>
+                <td> {{ server.server_type }} </td>
+                <td> {% if server.ups %} 有 {% else %} 无 {% endif %} </td>
+                <td> {{ server.os_type }} </td>
+                <td> {{ server.os_version }} </td>
+                <td> {{ server.server_cpu }} </td>
+                <td> {{ server.server_disk }} </td>
+                <td> {{ server.server_mem }} </td>
+                <td> {{ server.raid }} </td>
+                <td> {{ server.raid_card_type }} </td>
+                <td> {{ server.remote_card }} </td>
+                <td> {{ server.remote_cardip }} </td>
+                <td> {{ server.server_id }} </td>
+                <td> {{ server.server_purpose }} </td>
+                <td> {{ server.vm_status }} </td>
+                <td> {{ server.power }} </td>
+                </tr>
+            {% endfor %}
+
+      </tbody>
+    </table>
+</div>
+</div>
+{% include "public/footer.html" %}
+<script>
+    $(function(){
+        var height = window.innerHeight * 0.8;
+        $("#tab_box").css('height',height);
+    })
+</script>

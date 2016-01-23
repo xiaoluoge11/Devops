@@ -1,0 +1,32 @@
+.error{color:red;text-align:left !important;}
+img{outline: none;}
+
+
+.scroll_head {
+        position: relative;
+        margin-top:0;
+
+    }
+
+#tab_box{
+    font-size: 12px;
+    width:100%;
+    overflow:hidden;
+    margin-top:10px;
+    overflow-y:scroll;
+    box-sizing:border-box;
+    border: 1px solid #D5D5D5;
+    border-radius: 4px;
+    padding:2px;
+}
+
+.right_content{
+    float:left;
+    width:83%;
+    font-size:12px;
+    height:70%
+}
+.list_select_button{
+    width:100%;
+    line-height: 25px;
+}

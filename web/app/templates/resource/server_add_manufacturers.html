@@ -1,0 +1,46 @@
+{% extends "public/layout.html" %}
+{% block sidebar %}
+{% endblock %}
+
+{% block body %}
+<div style="float:left;min-width:800px;margin-left:10px;margin-top:20px;">
+<form action="/resource/server_manufacturers_doadd" method='post' class="form-horizontal" role="form" id="manufacturers_form">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">添加制造商</label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">制造商名称: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" onfocus name="name" class="form-control" placeholder="请输入制造商名称">
+        </div>
+        <label id="name-error" class="error col-sm-4 control-label"  for="name"></label>
+    </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-primary">添加</button>
+    </div>
+  </div>
+</form>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/static/js/jquery.validate.min.js"></script>
+<script>
+    $().ready(function() {
+    $("#manufacturers_form").validate({
+        rules: {
+            name: {
+                required: true,
+                minlength:2
+            }
+        },
+        messages: {
+            name: {
+                required: "没有输入制造商名称",
+                minlength: "请输入至少2个字"
+            }
+        }
+    });
+});
+</script>
+{% endblock %}
