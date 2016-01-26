@@ -66,8 +66,9 @@ def check_update_params(obj, data, where):
     if not where:
         raise Exception("需要提供where条件")
 
-    if not where.get('id', None):
-        raise Exception("需要提供id作为条件")
+    if  where.get('id', None) is None:
+	if where.get("uuid", None) is None:
+            raise Exception("需要提供update条件")
 
     try:
         id = int(where['id'])

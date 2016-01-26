@@ -158,7 +158,7 @@ class JsonRpc(object):
         if self.jsonData.get("params", None) is None:
             self.jsonError(self.jsonData.get('id', 0), 103, "params is not True")
             return False
-	if not isinstance(self.jsonData.get("params"),dict):
+	if not isinstance(self.jsonData.get("params"), dict):
 	    self.jsonError(self.jsonData.get('id', 0), 105, "params 应该为dict")
 	    return False
 

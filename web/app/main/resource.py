@@ -7,7 +7,8 @@ from flask import render_template, request
 from . import main
 import requests
 import json
-
+import time
+from app.common import api_action 
 
 @main.route("/resource/index", methods=['GET'])
 def resource_index():
@@ -64,6 +65,20 @@ def resource_server_doadd():
         return "操作成功"
     else:
         return "操作失败"
+
+
+@main.route("/resource/server_sysinfo", methods=['POST'])
+def resource_server_sysinfo():
+    data = request.json
+    print data
+    ret = api_action("server.create", data) 
+#    if str(ret).isdigit():
+#        return "操作成功"
+#    else:
+#        return "操作失败"
+    print ret
+    return "1"
+
 
 
 """
@@ -307,23 +322,23 @@ def resource_server_supplier_doadd():
 """
     工具函数 , 执行API操作
 """
-def api_action(action, params={}):
-    url = "http://127.0.0.1:5000/api"
-    headers = {"Content-type": "application/json"}
-    data = {
-        "jsonrpc": 2.0,
-        "method" : action,
-        "id": 1,
-        "auth": None,
-        "params": params
-    }
-    r = requests.post(url, headers=headers ,json=json.dumps(data))
-    if str(r.status_code) == "200":
-        ret = json.loads(r.content) 
-    if ret.has_key('result'):
-        return ret['result']
-    else:
-        return ret['error']
+#def api_action(action, params={}):
+#    url = "http://127.0.0.1:5000/api"
+#    headers = {"Content-type": "application/json"}
+#    data = {
+#        "jsonrpc": 2.0,
+#        "method" : action,
+#        "id": 1,
+#        "auth": None,
+#        "params": params
+#    }
+#    r = requests.post(url, headers=headers ,json=json.dumps(data))
+#    if str(r.status_code) == "200":
+#        ret = json.loads(r.content) 
+#    if ret.has_key('result'):
+#        return ret['result']
+#    else:
+#        return ret['error']
 
 
 
@@ -374,5 +389,26 @@ def resource_ajax_get_cabinet():
             ret = [item for item in cabinets if item['idc_id'] == idc_id]
             return json.dumps(ret)
     return ''
+
+
+"""
+    采集数据并入库
+
+"""
+@main.route("/resource/server/auto/collection", methods=['POST','GET'])
+def resource_server_collection():
+    # 1、接收传过来的主机数据
+    # 2 更新数据
+    # 3 插入数据
+    if request.method == "POST":
+	data = dict(request.form)
+	data['check_update_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
+	ret = api_action("server.update",{"data":data,"where":{"uuid":data["uuid"]}})
+	if not ret.isdigit():
+	    ret = api_action("server.create", data)
+	    if str(ret).isdigit():
+                return "操作成功"
+            else:
+                return ret
 
 

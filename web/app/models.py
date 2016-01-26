@@ -96,13 +96,13 @@ class Ipinfo(db.Model):
 class Server(db.Model):
     __tablename__    = 'server'
     id               = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    supplier         = db.Column(db.Integer, nullable=False, index=True) 
+    supplier         = db.Column(db.Integer,  index=True) 
     manufacturers    = db.Column(db.String(50),index=True, nullable=False)
     manufacture_date = db.Column(db.DateTime)
     server_type      = db.Column(db.String(20))
     st               = db.Column(db.String(60), index = True)
     assets_no        = db.Column(db.String(60))
-    idc_id           = db.Column(db.String(20), nullable=False, index=True)
+    idc_id           = db.Column(db.String(20), index=True)
     cabinet_id       = db.Column(db.Integer)
     cabinet_pos      = db.Column(db.String(10))
     expire           = db.Column(db.DateTime)
@@ -110,10 +110,9 @@ class Server(db.Model):
     parter           = db.Column(db.String(50)) 
     parter_type      = db.Column(db.String(50))
     server_up_time   = db.Column(db.DateTime)
-    os_type          = db.Column(db.String(20))
-    os_version       = db.Column(db.String(10))
-    hostname         = db.Column(db.String(32), index = True, nullable=False)
-    inner_ip         = db.Column(db.String(32), index = True, nullable=False) 
+    os               = db.Column(db.String(20)) 
+    hostname         = db.Column(db.String(32), index = True)
+    inner_ip         = db.Column(db.String(32), index = True) 
     mac_address      = db.Column(db.String(32))
     ip_info          = db.Column(db.String(300)) 
     server_cpu       = db.Column(db.String(250))
@@ -123,7 +122,7 @@ class Server(db.Model):
     raid_card_type   = db.Column(db.String(50)) 
     remote_card      = db.Column(db.String(32))
     remote_cardip    = db.Column(db.String(32))
-    status           = db.Column(db.Integer, nullable=False, index=True)
+    status           = db.Column(db.Integer, index=True)
     remark           = db.Column(db.Text)
     last_op_time     = db.Column(db.DateTime)
     last_op_people   = db.Column(db.Integer)
@@ -137,6 +136,7 @@ class Server(db.Model):
     vm_status        = db.Column(db.Integer, index = True)
     power            = db.Column(db.Integer)
     host             = db.Column(db.Integer, index = True, default=0)
+    uuid             = db.Column(db.String(32))
 
 class Managementcardtype(db.Model):
     __tablename__    = 'managementcardtype'
