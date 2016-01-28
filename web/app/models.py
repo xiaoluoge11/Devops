@@ -136,7 +136,7 @@ class Server(db.Model):
     vm_status        = db.Column(db.Integer, index = True)
     power            = db.Column(db.Integer)
     host             = db.Column(db.Integer, index = True, default=0)
-    uuid             = db.Column(db.String(32))
+    uuid             = db.Column(db.String(100))
 
 class Managementcardtype(db.Model):
     __tablename__    = 'managementcardtype'

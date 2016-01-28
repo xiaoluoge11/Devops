@@ -42,13 +42,15 @@ def get(**kwargs):
 
 def update(**kwargs):
     data = kwargs.get('data', {})
-    where = kwargs.get('where', {})
- 
-    check_update_params(Server, data, where)
-    ret = db.session.query(Server).filter_by(**where).update(data)
-    try:
-        db.session.commit()
-    except Exception,e:
-        raise Exception(e.message.split(")")[1])
+    where = kwargs.get('where', {}) 
+   # check_update_params(Server, data, where) 
+    print data
+    print where 
+    ret = db.session.query(Server).filter_by(**where).update(data)    
+#    try:
+    db.session.commit()
+#    except Exception,e:
+#        raise Exception(e.message.split(")")[1])
     return ret
+   
 

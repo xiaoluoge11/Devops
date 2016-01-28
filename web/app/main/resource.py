@@ -154,12 +154,10 @@ def resource_server_servertype_add():
 @main.route("/resource/server_servertype_doadd", methods=['POST'])
 def resource_server_servertype_doadd():
     ret = api_action("servertype.create", dict(request.form))
-    print ret
-    return "111"
-#    if str(ret).isdigit():
-#        return "操作成功"
-#    else:
-#        return "操作失败"
+    if str(ret).isdigit():
+        return "操作成功"
+    else:
+        return "操作失败"
 
 
 
@@ -395,7 +393,7 @@ def resource_ajax_get_cabinet():
     采集数据并入库
 
 """
-@main.route("/resource/server/auto/collection", methods=['POST','GET'])
+@main.route("/resource/server/auto/collection", methods=['POST'])
 def resource_server_collection():
     # 1、接收传过来的主机数据
     # 2 更新数据
@@ -403,12 +401,9 @@ def resource_server_collection():
     if request.method == "POST":
 	data = dict(request.form)
 	data['check_update_time'] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
-	ret = api_action("server.update",{"data":data,"where":{"uuid":data["uuid"]}})
-	if not ret.isdigit():
-	    ret = api_action("server.create", data)
-	    if str(ret).isdigit():
-                return "操作成功"
-            else:
-                return ret
-
-
+	print data
+	ret = api_action("server.update", {"where":{'uuid': data['uuid']}, 'data': data})
+	print ret
+	if int(ret) == 0:
+	    api_action("server.create", data)
+        return "成功更新"
