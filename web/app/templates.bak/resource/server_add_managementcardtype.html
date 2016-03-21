@@ -1,0 +1,45 @@
+{% extends "public/layout.html" %}
+{% block sidebar %}
+{% endblock %}
+{% block body %}
+<div style="float:left;min-width:800px;margin-left:10px;margin-top:20px;">
+<form action="/resource/server_managementcardtype_doadd" method='post' class="form-horizontal" role="form" id="management-card_type">
+    <div class="form-group">
+        <label class="col-sm-5 control-label">添加远程管理卡</label>
+    </div>
+    <div class="form-group">
+        <label  class="col-sm-3 control-label">远程管理卡类型名称: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" name="m_type" class="form-control" placeholder="输入远程管理卡类型名称">
+        </div>
+        <label id="m_type-error" class="error col-sm-4 control-label"  for="m_type"></label>
+    </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-primary">添加</button>
+    </div>
+  </div>
+</form>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/static/js/jquery.validate.min.js"></script>
+<script>
+    $().ready(function() {
+    $("#management-card_type").validate({
+        rules: {
+            m_type: {
+                required: true,
+                minlength:2
+            }
+        },
+        messages: {
+            m_type: {
+                required: "输入远程管理卡类型名称",
+                minlength: "请输入至少2个字"
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

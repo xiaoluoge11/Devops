@@ -1,0 +1,213 @@
+{% extends "public/layout.html" %}
+{% block sidebar %}
+{% include 'public/cmdb_left.html' %}
+{% endblock %}
+
+
+{% block custom_css %}
+
+    <!-- Bootstrap styling for Typeahead -->
+    <link href="/static/plugin/token-field/css/tokenfield-typeahead.css" type="text/css" rel="stylesheet">
+    <!-- Tokenfield CSS -->
+    <link href="/static/plugin/token-field/css/bootstrap-tokenfield.css" type="text/css" rel="stylesheet">
+    <style>
+    #tree{float: left; width:200px;}
+    #zabbix{float:left;}
+    .unlinnk{cursor:pointer}
+    #template_search{width:700px;margin-left:60px;height:40px;}
+    #piliang{margin-left:48px;}
+    #zb_content dt{text-align: left; padding-left:48px; width:220px;}
+    #zb_content .unlink{cursor:pointer}
+
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    <div id="tree"></div>
+    <div id="zabbix">
+        <div class="form-group form-inline " id="template_search">
+            <label for="exampleInputName2">模板搜索: </label>
+            <input type="text" class="col-xs-7" id="tokenfield" placeholder="模板搜索">
+            <button type="submit" class="btn btn-primary" id="link" >模板关联</button>
+        </div>
+        <div class="form-group form-inline" id="piliang">
+            <button type="button" class="btn btn-default" id="select_all">全选</button>
+            <button type="button" class="btn btn-default" id="select_fan">反选</button>
+            <button type="button" class="btn btn-default" id="select_no">全不选</button>
+        </div>
+        <dl class="dl-horizontal" id="zb_content">
+        </dl>
+    </div>
+{% endblock %}
+{% block js %}
+
+    <script src="/static/js/bootstrap-treeview.js"></script>
+    <script src="/static/plugin/token-field/bootstrap-tokenfield.min.js"></script>
+    <script src="/static/js/sweetalert.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/css/sweetalert.css">
+<script>
+var service_id = null;     // 当彰选择的业务线id
+var product_id = null;     // 当前选择的产品线id
+
+var zb_content = $("#zb_content");
+var unlink;
+
+function getTree() {
+  // Some logic to retrieve, or generate tree structure
+    var tree = {{ treeview|safe }};
+    return tree;
+}
+
+
+function inster_zabbix_data(data){
+    $.each( data, function(num, obj){
+        html = "";
+        html += get_host_html(obj);
+        html += get_template_html(obj);
+        zb_content.append(html)
+    });
+}
+
+function get_host_html(data){
+    html = '<dt><label class="checkbox-inline"><input type="checkbox" value="'+data.hostid+'">'+data.hostname+'</label></dt>';
+    return html
+}
+function get_template_html(data){
+    hostname = data.hostname;
+    hostid = data.hostid;
+    html = '<dd>';
+    html += '<ul class="list-inline">';
+    $.each( data.templates, function(num, obj){
+        html += '<li>'+obj.name;
+        data =   "template='"+obj.name+"'  hostid='"+hostid+"'  templateid='"+obj.templateid+"' hostname='"+hostname+"'";
+        html += ' <span class="glyphicon glyphicon-remove unlink" aria-hidden="true" '+data+' ></li>';
+    });
+    html += '</ul>';
+    html += '</dd>';
+    return html
+}
+
+
+function unlink_template(){
+        // 取消关联zabbix模板
+    $(".unlink").click(function(){
+        click_obj = $(this);
+        cli_hostname = click_obj.attr('hostname');
+        cli_hostid = click_obj.attr('hostid');
+        cli_templateid = click_obj.attr('templateid');
+        cli_template = click_obj.attr('template');
+        swal({
+            title: "确定删除吗?",
+            text: "将从 "+ cli_hostname +" 上取消关联 "+ cli_template +" 模板",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            cancelButtonText: "取消",
+            confirmButtonText: "删除",
+            closeOnConfirm: false },
+                function(){
+                    $.post("/monitor/ajax/unlink_zabbix_template", {hostid: cli_hostid, templateid: cli_templateid} , function(data){
+                        if (data == '1'){
+                            swal("操作成功", "模板解绑成功", "success");
+                            click_obj.parents('li').remove()
+                        }else{
+                            swal("操作失败", data, "error");
+                        }
+
+                    });
+
+                });
+    })
+}
+
+
+$(function(){
+    $('#tree').treeview({
+        data: getTree(),
+        onNodeSelected: function(event, data){
+            zb_content.empty()
+            if (data.pid == null){
+                return false
+            }
+            service_id = data.pid;
+            product_id = data.id;
+            $.post("/monitor/ajax/get_zabbix_data_by_group", {service_id: service_id, server_purpose: product_id} , function(data){
+                zabbix_data = JSON.parse(data);
+                inster_zabbix_data(zabbix_data)
+                unlink_template()
+            });
+        },
+        onNodeUnselected: function(event, data){
+            zb_content.empty();
+            service_id = null;
+            product_id = null;
+        }
+    });
+
+    $('#tokenfield').tokenfield({
+        autocomplete: {
+            source: {{ templates|safe }},
+            delay: 100
+        },
+        showAutocompleteOnFocus: true
+    });
+
+    // 绑定模板
+    $("#link").click(function(){
+        // 区取绑定id
+        template_ids = new Array();
+        $.each($('#tokenfield').tokenfield('getTokens'), function(n, obj){
+            template_ids[n] = obj.value
+        });
+        // 获取hostid
+        hostids = new Array();
+        $.each($("input:checkbox"), function(n,obj){
+            if ($(obj).prop('checked')){
+                hostids[n] = obj.value
+            }
+        });
+
+        if (template_ids.length == 0){
+            swal("操作失败", "请选择正确的模板", "error");
+            return false;
+        }
+
+        if (hostids.length == 0){
+            swal("操作失败", "没有沟选主机", "error");
+            return false;
+        }
+
+        $.post("/monitor/ajax/link_zabbix_template", {hostids: hostids.toString(), template_ids: template_ids.toString()} , function(data){
+            if (data == '1'){
+                swal("操作成功", "模板绑定成功", "success");
+            }else{
+                swal("操作失败", data, "error");
+            }
+
+        });
+    });
+
+    // 全选
+    $("#select_all").click(function(){
+        $("input:checkbox").prop("checked",true)
+
+    });
+
+    // 反选
+    $("#select_fan").click(function(){
+        $("input:checkbox").each(function () {
+            this.checked = !this.checked;
+         })
+    });
+
+    // 全不选
+    $("#select_no").click(function(){
+        $("input:checkbox").prop("checked",false)
+    });
+
+});
+
+</script>
+
+{% endblock %}

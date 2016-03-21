@@ -17,10 +17,10 @@ class DevelopmentConfig(config):
     SQLALCHEMY_ECHO = True
     SQLALCHEMY_DATABASE_URI = "mysql://reboot:123456@127.0.0.1/reboot"
     SQLALCHEMY_POOL_SIZE = 0
-    SQLALCHEMY_ZABBIX_API_URL = "http://42.62.73.236/zabbix/api_jsonrpc.php"
+    SQLALCHEMY_ZABBIX_API_URL = "http://192.168.10.100/zabbix"
     SQLALCHEMY_ZABBIX_API_USER = "Admin"
     SQLALCHEMY_ZABBIX_API_PASS = "zabbix"
-    SQLALCHEMY_ZABBIX_API_HEADERS = {'Content-Type': 'application/json-rpc'}
+#    SQLALCHEMY_ZABBIX_API_HEADERS = {'Content-Type': 'application/json-rpc'}
 
 class ProductionConfig(config):
     SQLALCHEMY_DATABASE_URI = "mysql://reboot:123456@127.0.0.1/reboot"

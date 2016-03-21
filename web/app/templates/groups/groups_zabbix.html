@@ -1,0 +1,79 @@
+{% extends "public/layout.html" %}
+{% block custom_css %}
+    <style>
+    #treeDemo{float: left;}
+    </style>
+{% endblock %}
+
+{% block body %}
+<link rel="stylesheet" href="/static/css/zTreeStyle.css" type="text/css">
+<div>
+<ul id="treeDemo" class="ztree"></ul>
+    </div>
+<div id="table_obj_info">
+
+
+</div>
+<ul id="log">
+
+</ul>
+{% endblock %}
+{% block js %}
+
+
+<script type="text/javascript" src="/static/js/jquery.ztree.core-3.5.js"></script>
+	<!--  <script type="text/javascript" src="../../../js/jquery.ztree.excheck-3.5.js"></script>
+	  <script type="text/javascript" src="../../../js/jquery.ztree.exedit-3.5.js"></script>-->
+
+
+
+   <SCRIPT type="text/javascript">
+		<!--
+		var setting = {
+			async: {
+				enable: true,
+				url:"/resource/groups/zabbix/ajax/get_idc",
+				autoParam:["id", "name=n", "level=lv"],
+				otherParam:{"otherParam":"zTreeAsyncTest"},
+				dataFilter: filter
+			},
+			callback : {
+			    onMouseDown: onMouseDown
+			}
+
+		};
+
+		function filter(treeId, parentNode, childNodes) {
+			if (!childNodes) return null;
+			for (var i=0, l=childNodes.length; i<l; i++) {
+				childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
+			}
+			return childNodes;
+		}
+
+		//get idc info
+	    function onMouseDown(event, treeId, treeNode){
+         // tree id:"+ treeId +"======" + treeNode.name + '===='+treeNode.level+ '===='+treeNode.id ;
+         var url = '/resource/groups/zabbix/ajax/get_hosts';
+         $.post(url, { id:treeNode.id ,level:treeNode.level,name:treeNode.name },function(data){
+            var html = '<table class="table table-bordered ">';
+            for (var i=0;i<data.length;i++) {
+                    html += '<tr>';
+                     html += '<td>'+ data[i].id +'</td>' ;
+
+                    html += '<td>'+ data[i].hostname +'</td>' ;
+
+                    html += '</tr>';
+            }
+            html += '</table>';
+
+            $("#table_obj_info").html(html);
+         }, "json");}
+
+
+		$(document).ready(function(){
+			$.fn.zTree.init($("#treeDemo"), setting);
+		});
+		//-->
+	</SCRIPT>
+{% endblock %}

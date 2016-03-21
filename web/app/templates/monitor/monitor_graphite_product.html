@@ -1,0 +1,162 @@
+{% extends "public/layout.html" %}
+{% block sidebar %}
+
+{% endblock %}
+
+
+{% block custom_css %}
+     <link rel="stylesheet" href="/static/css/dataTables.bootstrap.css" type="text/css" >
+<style>
+        #right_content{width:80%;margin:0 auto;}
+        #contain{width:1000px;height:auto;margin:0 auto;text-align: center;margin-top:20px;}
+        #product {width:100%; min-height: 50px;text-align: left;padding-top: 10px;}
+        #product button{margin-right:10px;margin-bottom:10px;}
+        #contain img{margin: 0 auto;margin-top:5px;}
+        #time{text-align: left}
+
+
+</style>
+
+{% endblock %}
+
+{% block body %}
+    <div id="right_content">
+        <div id="product">
+
+        </div>
+        <div id="time">
+            <button class="btn btn-success" type="button" data="-30min">半小时</button>
+            <button class="btn btn-info" type="button" data="-5h">5小时</button>
+            <button class="btn btn-info" type="button" data="-12h">12小时</button>
+            <button class="btn btn-info" type="button" data="-1d">1天</button>
+            <button class="btn btn-info" type="button" data="-3d">3天</button>
+            <button class="btn btn-info" type="button" data="-7d">7天</button>
+        </div>
+        <div id="contain"></div>
+    </div>
+
+
+{% endblock %}
+{% block js %}
+    <script type="text/javascript" charset="utf8" src="/static/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="/static/js/dataTables.bootstrap.js"></script>
+
+<script>
+    var data = {{ data|safe }};
+    var hostlist ;
+
+    var image_item ;
+    var graphite_api = "{{ graphite_api }}";
+    var width = 900;
+    var height = 300;
+    var time = "-30min";
+    var images_objs ;
+    var contain = $("#contain");
+
+
+    function initialization(obj, item){
+        console.log(item.length)
+        var html = "<img class='graphite_img' src='/static/images/loading.jpg'/></br>";
+        $.each(item, function(n,o){
+            obj.append(html);
+        })
+
+    }
+
+    function loading(images_objs){
+        for (var i=0;i<images_objs.length; i++) {
+            images_objs.eq(i).attr('src', '/static/images/loading.jpg');
+        }
+
+    }
+
+    function get_target_hostlist(image_item){
+        ret = new Array();
+        $.each(image_item, function(n, data){
+            var target = ""
+            $.each(hostlist, function(i, host){
+                 target += "&target=aliasByNode(" + host + "." + data.key+",0)" ;
+            });
+            target += "&yUnitSystem="+ data.type + "&title=" + data.title;
+            target += "&fgcolor=000000&bgcolor=FFFFFF";
+            ret[n] = target;
+        });
+        return ret
+    }
+
+    function flush(images_objs, graphite_api, image_item){
+        var now = new Date().getTime();
+        var target = get_target_hostlist(image_item);
+        $.each(images_objs, function(i, d){
+            var img_url = graphite_api +"width=" + width +"&height=" + height + target[i]+ "&from=" + time +"&t=" + now;
+            setTimeout(function(){
+                images_objs.eq(i).attr('src', img_url);
+            },100);
+
+        });
+    }
+
+
+    function get_product(obj, data){
+        $.each(data,function(i, d){
+            obj.append('<button type="button" class="btn btn-primary">'+d.product+'</button>')
+        });
+        obj.find("button").eq(0).removeClass("btn-primary").addClass("btn-success");
+        hostlist = data[0].hostlist;
+        image_item = data[0].item;
+    }
+
+    $(function(){
+        get_product($("#product"), data);
+        var product_btn = $("#product button");
+        initialization(contain,image_item);
+        images_objs = $(".graphite_img");
+
+        // 刷新页面图像
+        flush(images_objs, graphite_api, image_item);
+
+        // 点击产品
+        product_btn.click(function(){
+            // 调整当前点击按键的样式
+            product_btn.removeClass("btn-success").addClass("btn-primary");
+            $(this).removeClass("btn-primary").addClass("btn-success");
+            // 获取当前点击的是第几个按键
+            index = product_btn.index(this);
+            // 重新获取下需要民法的监控项
+            image_item = data[index].item;
+            // 删除img卫br标签
+            contain.find("img").remove();
+            contain.find("br").remove();
+            // 往页面写入相应的img标签
+            initialization(contain,image_item);
+            // 将img标签中的图改为 加载中
+            images_objs = $(".graphite_img");
+            loading(images_objs);
+            // 修改当前民法的主机信息
+            hostlist = data[index].hostlist;
+            // 重新加载监控图
+            flush(images_objs, graphite_api, image_item);
+        });
+
+
+        // 点击时间
+        var btn = $("#time .btn");
+        btn.click(function(){
+            loading(images_objs);
+            btn.removeClass("btn-success").addClass("btn-info");
+            var click_btn = $(this);
+            click_btn.removeClass("btn-info").addClass("btn-success");
+
+            time = click_btn.attr('data');
+            flush(images_objs, graphite_api, image_item);
+
+        });
+
+        // 按时间加载
+        setInterval(function(){
+            flush(images_objs, graphite_api, image_item);
+        },10000);
+
+    })
+</script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "public/layout.html" %}
+{% block sidebar %}
+{% endblock %}
+
+{% block body %}
+<div style="float:left;min-width:800px;margin-left:10px;margin-top:20px;">
+<form action="/resource/server_servertype_doadd" method='post' class="form-horizontal" role="form" id="servertype_form">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">添加服务器类型</label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">制造商: </label>
+        <div class="col-xs-4">
+            <select name='manufacturers_id' class="form-control">
+            <option value="0">请选择</option>
+            {% for manufacturer in manufacturers %}
+            <option value="{{ manufacturer.id }}">{{ manufacturer.name }}</option>
+            {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">服务器类型名称: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" name="type" class="form-control" placeholder="请填写业务线名称">
+        </div>
+        <label id="name-type" class="error col-sm-3 control-label"  for="type"></label>
+    </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-primary">添加</button>
+    </div>
+  </div>
+</form>
+</div>
+{% endblock %}
+{% block js %}
+
+<script src="/static/js/jquery.validate.min.js"></script>
+<script>
+    $().ready(function() {
+        $("#servertype_form").validate({
+            rules: {
+                type: {
+                    required: true,
+                    minlength:1
+                }
+            },
+            messages: {
+                type: {
+                    required: "请输入服务器类型名称",
+                    minlength: "请输入至少1个字"
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

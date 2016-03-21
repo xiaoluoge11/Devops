@@ -1,0 +1,61 @@
+{% extends "public/layout.html" %}
+{% block custom_css %}
+    <style>
+    #tree{float: left; width:200px;}
+    #custom_product{float:left;margin-left: 30px;}
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <link rel="stylesheet" href="/static/css/multi-select.css" type="text/css">
+    <div id="tree"></div>
+    <div id="custom_product">
+        <select id='custom-headers' multiple='multiple'>
+            <option value='elem_1' selected>elem 1</option>
+            <option value='elem_2'>elem 2</option>
+            <option value='elem_3'>elem 3</option>
+            <option value='elem_4' selected>elem 4</option>
+
+            <option value='elem_100'>elem 100</option>
+        </select>
+    </div>
+
+
+{% endblock %}
+{% block js %}
+    <script src="/static/js/bootstrap-treeview.js"></script>
+    <script src="/static/js/jquery.multi-select.js"></script>
+<script>
+function getTree() {
+  // Some logic to retrieve, or generate tree structure
+    var tree = {{ treeview|safe }};
+    return tree;
+}
+
+$(function(){
+    $('#tree').treeview({
+        data: getTree(),
+        onNodeSelected:function(event, node){
+            console.log(event, node)
+        }
+    });
+
+
+    $('#custom-headers').multiSelect({
+        selectableHeader: "<div class='custom-header'>不在分组内的机器</div>",
+        selectionHeader: "<div class='custom-header'>组内机器</div>",
+        afterSelect: function(values){
+            swal("操作成功!", "将 '"+values+"' 移到组内", "success")
+
+        },
+        afterDeselect: function(values){
+            swal("操作成功!", "将 '"+values+"' 移出该内", "success")
+        }
+    });
+
+});
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "public/layout.html" %}
+{% block sidebar %}
+{% endblock %}
+{% block body %}
+<div style="float:left;min-width:800px;margin-left:10px;margin-top:20px;">
+<form action="/resource/server_power_doadd" method='post' class="form-horizontal" role="form" id="power_form">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">添加电源功率</label>
+    </div>
+    <div class="form-group">
+        <label for="inputEmail3" class="col-sm-2 control-label">电源功率: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" name="server_power" class="form-control" placeholder="请输入电源功率">
+        </div>
+        <label id="server_power-error" class="error col-sm-4 control-label"  for="server_power"></label>
+    </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-primary">添加</button>
+    </div>
+  </div>
+</form>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/static/js/jquery.validate.min.js"></script>
+<script>
+    $().ready(function() {
+    $("#power_form").validate({
+        rules: {
+            server_power: {
+                required: true
+            }
+        },
+        messages: {
+            server_power: {
+                required: "输入电源功率"
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

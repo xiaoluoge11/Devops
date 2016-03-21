@@ -3,19 +3,6 @@ from app.models import db, Server, Supplier, Raid, Status, User, Product, Idc, C
 from app.utils import *
 
 def create(**kwargs):
-   # check_field_exists(Server, kwargs)
-#    print kwargs.get("raid", None)  
-#    check_value_exists(Supplier, 'id', kwargs.get("supplier", None))
-#    check_value_exists(Raid, 'name', kwargs.get("raid", None))
-#    check_value_exists(Status, 'id', kwargs.get("status", None))
-#    check_value_exists(User, 'id', kwargs.get("last_op_people", None))
-#    check_value_exists(Product, 'id', kwargs.get("service_id", None))
-#    check_value_exists(Product, 'id', kwargs.get("server_purpose", None))
-#    check_value_exists(User, 'id', kwargs.get("trouble_resolve", None))
-#    check_value_exists(User, 'id', kwargs.get("op_interface_other", None))
-#    check_value_exists(User, 'id', kwargs.get("dev_interface", None))
-#    check_value_exists(Power, 'id', kwargs.get("power", None))
-
     obj = Server(**kwargs)
     db.session.add(obj)
     try:
@@ -28,12 +15,15 @@ def get(**kwargs):
     output = kwargs.get('output', [])
     limit = kwargs.get('limit', 10)
     order_by = kwargs.get('order_by', 'id desc')
+    where = {}
+    if kwargs.get('where') and isinstance(kwargs['where'], dict):
+	where =kwargs['where']
  
     check_output_field(Server, output)
     check_order_by(Server, order_by)
     check_limit(limit)
   
-    data = db.session.query(Server).order_by(order_by).limit(limit).all()
+    data = db.session.query(Server).filter_by(**where).order_by(order_by).limit(limit).all()
     db.session.close()
     ret = process_result(data, output)
     return ret

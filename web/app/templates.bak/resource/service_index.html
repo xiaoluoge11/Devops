@@ -1,0 +1,17 @@
+{% include "public/header.html" %}
+{% include "public/cmdb_left.html" %}
+<style>
+dt,dd{line-height:30px;font-size:14px;}
+</style>
+<div style="float:left;min-width:800px;margin-left:10px;margin-top:20px;">
+<a class="btn btn-default" href="/resources/service/add" role="button" style="margin-left:200px;" >去添加业务线或产品线</a>
+<dl class="dl-horizontal">
+    {% for service,products in services.items %}
+        <dt>{{ service.service_name }}</dt>
+        {% for prod in products %}    
+            <dd>{{ prod.service_name }}<dd>
+        {% endfor %}
+    {% endfor %}
+<dl>
+</div>
+{% include "public/footer.html" %}

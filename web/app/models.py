@@ -97,7 +97,7 @@ class Server(db.Model):
     __tablename__    = 'server'
     id               = db.Column(db.Integer, primary_key=True, autoincrement=True)
     supplier         = db.Column(db.Integer,  index=True) 
-    manufacturers    = db.Column(db.String(50),index=True, nullable=False)
+    manufacturers    = db.Column(db.String(50),index=True)
     manufacture_date = db.Column(db.DateTime)
     server_type      = db.Column(db.String(20))
     st               = db.Column(db.String(60), index = True)
@@ -143,6 +143,14 @@ class Managementcardtype(db.Model):
     id               = db.Column(db.Integer, primary_key=True, autoincrement=True)
     m_type           = db.Column(db.String(50), nullable=False)
 
+class ZbHost(db.Model):
+    __tablename__    = 'zbhost'
+    id               = db.Column(db.Integer, primary_key=True)
+    cmdb_hostid      = db.Column(db.Integer, index=True, unique = True)
+    hostid           = db.Column(db.Integer, index=True, unique = True)
+    host             = db.Column(db.String(50))
+    ip               = db.Column(db.String(32))
+
     
 class Switch(db.Model):
     __tablename__    = 'switch'
@@ -159,7 +167,30 @@ class Switch(db.Model):
     manufacturers    = db.Column(db.Integer, nullable=False, index=True)
     last_op_time     = db.Column(db.DateTime)
     last_op_people   = db.Column(db.Integer, nullable=False)
-    switch_port_nums = db.Column(db.Integer) 
+    switch_port_nums = db.Column(db.Integer)
+
+class GraphiteKeys(db.Model):
+    __tablename__    = "graphite_keys"
+    id               = db.Column(db.Integer, primary_key=True)
+    name             = db.Column(db.String(200), unique=True)
+    type             = db.Column(db.String(20))
+    title            = db.Column(db.String(50))
+    status           = db.Column(db.Integer, index=True, default=0)
+
+class GraphiteGroupKey(db.Model):
+    __tablename__    = "graphite_group_key"
+    id               = db.Column(db.Integer, primary_key=True)
+    service_id       = db.Column(db.Integer, index=True)
+    key_id           = db.Column(db.Integer)
+
+class Maintenance(db.Model):
+    __tablename__    = "maintenance"
+    id               = db.Column(db.Integer, primary_key=True)
+    maintenance_name = db.Column(db.String(50))
+    hostname         = db.Column(db.String(50), index=True)
+    maintenance_time = db.Column(db.Integer)
+    update_time      = db.Column(db.DateTime)
+ 
 
 class switch_pirpost(db.Model):
     __tablename__       = 'reboot_test'

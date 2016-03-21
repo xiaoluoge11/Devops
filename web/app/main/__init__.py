@@ -3,4 +3,4 @@
 from flask import Blueprint
 
 main = Blueprint('main', __name__)
-from . import views, errors, resource
+from . import views, errors, resource, monitor, zabbix

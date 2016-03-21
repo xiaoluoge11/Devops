@@ -1,0 +1,114 @@
+{% extends "public/layout.html" %}
+
+{% block custom_css %}
+    <link href="/static/plugin/multi-select/css/multi-select.css" media="screen" rel="stylesheet" type="text/css">
+    <style>
+        .ms-container{width:100%}
+        .select_header{width:100%;height:40px;text-align: center;line-height:35px;}
+    </style>
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'public/cmdb_left.html' %}
+{% endblock %}
+
+
+{% block body %}
+
+    <div class="col-xs-2" id="tree"></div>
+    <div class="col-xs-5">
+        <select id='pre-selected-options' multiple='multiple'>
+        </select>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    <script src="/static/js/bootstrap-treeview.js"></script>
+    <script src="/static/plugin/multi-select/js/jquery.multi-select.js"></script>
+    <script>
+
+        var service_id = null;     // 当彰选择的业务线id
+        var product_id = null;     // 当前选择的产品线id
+
+        var select_options = $('#pre-selected-options');
+
+        var de_hosts = {{ hosts|safe }};
+
+        function getTree(){
+            var data = {{ treeview|safe }};
+            return data;
+        }
+
+        $(function(){
+
+            $('#tree').treeview({
+                data: getTree(),
+                onNodeSelected: function(event, data){
+                    if (data.hasOwnProperty('pid')){
+                        // 用户点击的是产品线
+                        if (de_hosts.length > 0){
+                            console.log(de_hosts)
+                            select_options.multiSelect('addOption', de_hosts).multiSelect('select_all');
+                        }
+                        product_id = data.id;
+                        service_id = data.pid;
+                        $.post("/monitor/ajax/graphite/group/get_keys", {service_id: product_id} , function(data){
+                            seclect_host = JSON.parse(data);
+                            if (seclect_host.length > 0){
+                                select_options.multiSelect('deselect', seclect_host)
+                            }
+                        });
+
+                    }else{
+                        select_options.empty().multiSelect('refresh');
+                        service_id = null;
+                        product_id = null;
+                    }
+                },
+                onNodeUnselected: function(event, data){
+                    console.log('disableed')
+                    select_options.empty().multiSelect('refresh');
+                    service_id = null;
+                    product_id = null;
+                }
+            });
+
+
+            select_options.multiSelect({
+                selectableHeader: '<div class="select_header"><span class="label label-info">组内机器</span></div>',
+                selectionHeader: '<div class="select_header"><span class="label label-default">组外机器</span></div>',
+                afterSelect: function(values){
+                    // 从分组内删除机器
+                    if (service_id == null && product_id == null){
+                        return false
+                    }
+                    $.post("/monitor/ajax/graphite/del/key/group", {service_id: product_id,key_id: values[0]} , function(data){
+                        if (data == '1'){
+                            swal("删除成功", "", "success")
+                        }else{
+                            swal("删除失败", "", "error")
+                        }
+                    });
+                },
+                afterDeselect: function(values){
+                    // 将指定机器添加到分组内
+                    if (service_id == null && product_id == null){
+                        return false
+                    }
+                    $.post("/monitor/ajax/graphite/add/key/group", {service_id: product_id, key_id: values[0]} , function(data){
+                        if (data == '1'){
+                            swal("添加成功!", "", "success");
+                        }else if(data != '0'){
+                            swal("添加失败", "", "error")
+                        }
+                    });
+                }
+
+            });
+
+        });
+
+    </script>
+
+{% endblock %}

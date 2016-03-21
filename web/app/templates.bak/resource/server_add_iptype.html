@@ -1,0 +1,40 @@
+{% include "public/header.html" %}
+<div style="float:left;min-width:800px;margin-left:10px;margin-top:20px;">
+<form action="/resources/server/doaddiptype" method='post' class="form-horizontal" role="form" id="iptype_form">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">添加ip类型</label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">IP类型名称: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" name="name" class="form-control" placeholder="请填写业务线名称">
+        </div>
+        <label id="name-error" class="error col-sm-4 control-label"  for="name"></label>
+    </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-primary">添加</button>
+    </div>
+  </div>
+</form>
+</div>
+{% include "public/footer.html" %}
+<script src="/static/js/jquery.validate.min.js"></script>
+<script>
+    $().ready(function() {
+    $("#iptype_form").validate({
+        rules: {
+            name: {
+                required: true,
+                minlength:2
+            }
+        },
+        messages: {
+            name: {
+                required: "请输入IP类型名称",
+                minlength: "请输入至少2个字"
+            }
+        }
+    });
+});
+</script>

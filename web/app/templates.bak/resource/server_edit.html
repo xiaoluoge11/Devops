@@ -1,0 +1,370 @@
+{% extends "public/layout.html" %}
+
+
+
+{% block body %}
+<div style="float:left;width:900px;margin-left:10px;margin-top:20px;padding-bottom: 80px;">
+    <form action="/resources/server/toupdateserver" method='post' class="form-horizontal" role="form">
+        <div class="form-group">
+            <label class="control-label"> >>添加业服务器</label>
+        </div>
+        <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label">ST：</label>
+            <div class="col-xs-4">
+                <input type="text" autocomplete="off" name="st" class="form-control" placeholder="请填写业务线名称" value="{{ server.st }}" readonly>
+            </div>
+            <label id="name-st" class="col-sm-4 control-label error"  for="st"></label>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-2 control-label">资产号：</label>
+            <div class="col-xs-4">
+                <input type="text" autocomplete="off" name="assets_no" class="form-control" value="{{ server.assets_no }}" placeholder="请填写业务线名称">
+            </div>
+            <label id="name-assets_no" class="col-sm-4 control-label error"  for="assets_no"></label>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">制造商：</label>
+            <div class="col-xs-4">
+                <select class="form-control" id="manufacturers">
+                    <option value="0">请选择制造商</option>
+                    {% for manufacturer in manufacturers %}
+                    <option value="{{ manufacturer.id }}" {% if manufacturer.name == server.manufacturers %} selected {% endif %} data="{{ manufacturer.name }}">{{ manufacturer.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="hidden" name="manufacturers" value="" id="manufacturers_input">
+            </div>
+            <button type="button" class="btn btn-link">
+                <a href="/resources/server/addmanufacturers" target="_blank" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </button>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">服务器类型：</label>
+            <div class="col-xs-4">
+                <select name='server_type' class="form-control" aa="{{ server.servertype }}" id="servertype">
+                <option value="{{ server.server_type }}">{{ server.server_type }}</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-link">
+                <a href="/resources/server/addservertype" target="_blank" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </button>
+        </div>
+        <div class="form-group">
+            <label for="inputEmail3" class="col-sm-2 control-label">业务线：</label>
+            <div class="col-xs-2">
+                <select name='service_id' class="form-control" id="service_id">
+                <option value="0">请选择业务线</option>
+                {% for product in products %}
+                <option value="{{ product.id }}" {% if product.name == server.service %} selected {% endif %} data="{{ product.name }}">{{ product.service_name }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <label for="inputEmail3" class="col-sm-2 control-label">产品线：</label>
+            <div class="col-xs-2">
+                <select name='server_purpose' class="form-control" id="server_purpose">
+                {% for purpose in services %}
+                <option value="{{ purpose.id }}" {% if purpose.id == server.service_purpose %} selected {% endif %} data="{{ purpose.name }}">{{ purpose.service_name }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <button type="button" class="btn btn-link">
+                <a href="/resources/server/addproduct" target="_blank" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </button>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-2 control-label">服务器状态：</label>
+            <div class="col-xs-4">
+                <select name='status' class="form-control">
+                    <option value="0">请选择服务器状态</option>
+                    {% for status in service_status %}
+                    <option value="{{ status.id }}"{% if status.id == server.status %} selected {% endif %} data="{{ server.status }}">{{ status.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="button" class="btn btn-link">
+                <a href="/resources/server/addstatus" target="_blank" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </button>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">IDC：</label>
+            <div class="col-xs-4">
+                <select name='idc_id' class="form-control" id="idc_id">
+                <option value="0">请选择IDC</option>
+                {% for idc in idcs %}
+                <option value="{{ idc.id }}"{% if idc.id == server.idc_id %} selected {% endif %} data="{{ idc.name }}">{{ idc.idc_name }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <button type="button" class="btn btn-link">
+                <a href="/resources/server/addidc" target="_blank" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </button>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">机柜号：</label>
+            <div class="col-xs-2">
+                <select name='cabinet_id' class="form-control" id="cabinet_id">
+                <option value="0">机柜号</option>
+                {% for cabinet in cabinets %}
+                <option value="{{ cabinet.id }}" {% if cabinet.id == server.cabinet_id %} selected {% endif %} data="{{ cabinet.name }}">{{ cabinet.name }}</option>
+                {% endfor %}
+                </select>
+            </div>
+            <button type="button" style="float:left;" class="btn btn-link">
+                <a href="/resources/server/addcabinet" target="_blank" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </button>
+            <label class="col-sm-2 control-label">托盘位置：</label>
+            <div class="col-xs-2">
+                <input type="text" autocomplete="off" name="cabinet_pos" class="form-control" placeholder="机柜内的位置" value="{{ server.cabinet_pos }}">
+            </div>
+            <label id="name-cabinet_pos" class="col-sm-4 control-label error"  for="cabinet_pos"></label>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">主机名：</label>
+            <div class="col-xs-4">
+                <input type="text" autocomplete="off" name="hostname" class="form-control" placeholder="请输入主机名" value="{{ server.hostname }}">
+            </div>
+            <label id="name-hostname" class="col-sm-4 control-label error"  for="hostname"></label>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">ip：</label>
+            <div class="col-xs-2"  style="width:110px;padding-right:0px;">
+
+                <select class="form-control ip_info">
+                    <option value='0'>请选择</option>
+                    {% for iptype in iptypes %}
+                    <option value="{{ iptype.id }}" data="{{ iptype.name }}" >{{ iptype.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="hidden" name="ip_type" value="" id="ip_type">
+            </div>
+            <button type="button" style="float:left;" class="btn btn-link">
+                <a href="/resources/server/addiptype" target="_blank" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </button>
+            <label style="padding-left:0px;width:40px;padding-right:0px;" class="col-sm-2 control-label">地址:</label>
+            <div class="col-xs-2">
+                <input type="text" autocomplete="off" name="ip" class="form-control" placeholder="请输入ip">
+            </div>
+            <label for="inputPassword3" style="padding-left:0px;width:40px;padding-right:0px;"  class="col-sm-2 control-label">网口:</label>
+            <div class="col-xs-2" style="width:110px;padding-right:0px;" >
+                <select name='device' class="form-control">
+                    <option value="eth0">eth0</option>
+                    <option value="eth1">eth1</option>
+                    <option value="eth2">eth2</option>
+                    <option value="eth3">eth3</option>
+                    <option value="manage">manage</option>
+                </select>
+            </div>
+            <label style="padding-left:0px;width:80px;padding-right:0px;"   class="col-sm-2 control-label">MAC地址:</label>
+            <div class="col-xs-2">
+                <input type="text" autocomplete="off" name="mac" class="form-control" placeholder="请输入MAC地址">
+            </div>
+            <button type="button" style="float:left;" class="btn btn-link">
+                <a href="#" class="add_ip" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </button>
+        </div>
+        <div class="form-group">
+            <label for="inputPassword3" class="col-sm-2 control-label">RAID：</label>
+            <div class="col-xs-4">
+                <select name='raid' class="form-control">
+                    <option value="0">请选择</option>
+                    {% for raid in raids %}
+                    <option value="{{ raid.name }}"{% if raid.name == server.raid %} selected {% endif %} data="{{ raid.name }}">{{ raid.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="button" class="btn btn-link">
+                <a href="/resources/server/addraid" target="_blank" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </button>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-2 control-label">RAID型号：</label>
+            <div class="col-xs-4">
+                <select name='raid_card_type' class="form-control">
+                    <option value="0">请选择</option>
+                    {% for raidtype in raidtypes %}
+                    <option value="{{ raidtype.name }}" {% if raidtype.name == server.raid_card_type %} selected {% endif %} data="{{ raidtype.name }}">{{ raidtype.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="button" class="btn btn-link">
+                <a href="/resources/server/addraidcardtype" target="_blank" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </button>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">UPS电源有无：</label>
+            <div class="col-xs-4">
+                <select name='ups' class="form-control">
+                    <option value="0">无</option>
+                    <option value="1">有</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-2 control-label">远程管理卡：</label>
+            <div class="col-xs-4">
+                <select name='remote_card' class="form-control">
+                    <option value="0">请选择</option>
+                    {% for managementcard in managementcards %}
+                        <option value="{{ managementcard.m_type }}" {% if managementcard.m_type == server.remote_card %} selected {% endif %} data="{{ server.remote_card }}">{{ managementcard.m_type }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="button" class="btn btn-link">
+                <a href="/resources/server/addmanagementcardtype" target="_blank" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </button>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-2 control-label">管理卡IP：</label>
+            <div class="col-xs-4">
+                <input type="text" autocomplete="off" name="remote_cardip" class="form-control" laceholder="请输入管理ip" value="{{ server.remote_cardip }}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">电源功率：</label>
+            <div class="col-xs-4">
+                <select name='power' class="form-control">
+                    <option value="0">请选择</option>
+                    {% for power in powers %}
+                    <option value="{{ power.server_power }}">{{ power.server_power }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="button" class="btn btn-link">
+                <a href="/resources/server/addpower" target="_blank" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </button>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-2 control-label">供应商：</label>
+            <div class="col-xs-4">
+                <select name='supplier' class="form-control">
+                    <option value="0">请选择</option>
+                    {% for supplier in suppliers %}
+                    <option value="{{ supplier.name }}"{% if supplier.name == server.supplier %} selected {% endif %} data="{{ supplier.name }}">{{ supplier.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <button type="button" class="btn btn-link">
+                <a href="/resources/server/addsupplier" target="_blank" ><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            </button>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-2 control-label">到保日期：</label>
+            <div class="input-group date form_date col-xs-4" data-date="" data-date-format="yyyy-mm-dd"
+                 data-link-field="dtp_input2" data-link-format="yyyy-mm-dd" style="padding-left:15px;padding-right:15px;">
+                <input class="form-control" name="expire"  type="text" value="{{ server.expire }}" readonly />
+                <span class="input-group-addon"><span class="glyphicon glyphicon-remove" ></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar" ></span></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label  class="col-sm-2 control-label">备注：</label>
+            <div class="col-xs-6">
+                <textarea class="form-control" name="remark" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary">添加</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+{% block js %}
+
+<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script type="text/javascript" src="/static/js/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<script>
+$(function(){
+
+    $("#service_id").change(function(){
+        var pid = $(this).val();
+        if(pid != 0){
+            $.get("/api/ajax/get-server-product",{pid:pid},function(data){
+                var html = '<option value="0">请选择主品线</option>';
+                for (x in data) {
+                    html += "<option value='"+data[x].id+"'>"+data[x].service_name+"</option>"
+                }
+                $("#server_purpose").html(html)
+             },"json");
+        }else{
+             $("#server_purpose").html('<option value="0">请选择业务</option>')
+        }
+    });
+
+    $("#idc_id").change(function(){
+        var idc_id = $(this).val();
+        if(idc_id != 0){
+            $.get("/api/ajax/get-server-cabinet",{idc_id:idc_id},function(data){
+                var html = '<option value="0">请选择机柜号</option>';
+                for (x in data) {
+                    html += "<option value='"+data[x].id+"'>"+data[x].name+"</option>"
+                }
+                $("#cabinet_id").html(html)
+             },"json");
+        }else{
+             $("#cabinet_id").html('<option value="0">请选择机房</option>')
+        }
+    });
+
+    $("#manufacturers").change(function(){
+        var manufacturers_id = $(this).val();
+        var opt_objs = $(this).find('option');
+        $.each(opt_objs,function(n,value) {
+             var new_obj = $(value);
+             if(manufacturers_id == new_obj.val()){
+                 var new_val = new_obj.attr('data');
+                 $('#manufacturers_input').val(new_val)
+             }
+
+         })
+
+        if(manufacturers_id != 0){
+            $.get("/api/ajax/get-server-type",{manufacturers_id:manufacturers_id},function(data){
+                var html = '<option value="0">请选择服务器类型</option>';
+                for (x in data) {
+                    html += "<option value='"+data[x].type+"'>"+data[x].type+"</option>"
+                }
+                $("#servertype").html(html)
+             },"json");
+        }else{
+             $("#servertype").html('<option value="0">请选择制造商</option>')
+        }
+    });
+
+    // 时间插件
+    $('.form_date').datetimepicker({
+            language: 'zh-CN',
+            weekStart: 1,
+            todayBtn: 1,
+      autoclose: 1,
+      todayHighlight: 1,
+      startView: 2,
+      minView: 2,
+      forceParse: 0
+    });
+
+    $(".add_ip").click(function(){
+        var oldobj = $(this).parents(".form-group");
+        var newObject = jQuery.extend(true, {}, oldobj);
+        oldobj.before('<div class="form-group">'+newObject.html()+'</div>');
+        return false;
+    })
+
+    // ip name change
+    $('.ip_info').change(function(){
+        var sel_obj = $(this);
+        var select_val = sel_obj.val();
+        var option_objs = sel_obj.find('option');
+         $.each(option_objs,function(n,value) {
+             var new_obj = $(value);
+             if(select_val == new_obj.val()){
+                 var new_val = new_obj.attr('data');
+                 $('#ip_type').val(new_val)
+             }
+
+         })
+
+    })
+})
+</script>
+{% block %}

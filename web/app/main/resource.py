@@ -4,12 +4,13 @@
 from __future__ import unicode_literals
 from flask import render_template, request
 
+from app.models import db, ZbHost, Server, Maintenance 
 from . import main
 import requests
 import json
 import time
 from app.common import api_action 
-
+import app.common.monitor
 @main.route("/resource/index", methods=['GET'])
 def resource_index():
     return render_template("resource/index.html")
@@ -24,6 +25,12 @@ def resource_idc():
 def resource_server_list():
     servers = api_action("server.get")
     return render_template("resource/server_list.html",
+                           servers=servers)
+
+@main.route("/resource/server_asses", methods=['GET'])
+def resource_server_asses():
+    servers = api_action("server.get")
+    return render_template("resource/server_asses.html",
                            servers=servers)
 
 
@@ -407,3 +414,257 @@ def resource_server_collection():
 	if int(ret) == 0:
 	    api_action("server.create", data)
         return "成功更新"
+
+"""
+    cache文件
+
+"""
+#@main.route("/cache", methods=['GET'])
+#def cache():
+##    from app.common.zabbix import init_zabbix,init_cmdb
+#    init_cmdb() 
+#    return ''
+
+'''
+   获取不在zabbix里的所有主机
+
+'''
+@main.route("/resource/monitor/ajax/get_sync_zabbix_hosts", methods=['POST'])
+def get_sync_zabbix_host():
+    from app.common.zabbix import init
+    init()
+ 
+    zabbix_hosts = db.session.query(ZbHost).all()
+    db.session.close()
+    #不在cache表里的数据
+#    select * from server where id not in zabbix_hosts_cmdb_id
+    hostid = [zb.cmdb_hostid for zb in zabbix_hosts]  #在缓存表里的服务器id
+    servers = db.session.query(Server).filter(~Server.id.in_(hostid)).all() ##~表示取反    
+    return json.dumps([{"hostname":s.hostname, "id":s.id} for s in servers]) 
+
+#@main.route("/monitor/ajax/get_zabbix_host_groups",methods=['POST'])
+#def get_zabbix_host_groups():
+
+"""
+同步主机到zabbix
+
+"""
+@main.route("/resource/monitor/ajax/sync_host_to_zabbix", methods=['POST'])
+def sync_host_to_zabbix():
+    #接收参数
+    #hostid groupid
+    if request.method == "POST":
+	from app.common.zabbix import create_zabbix_host
+	params = dict(request.form)
+	hostids = params['hostids'][0].split(',')
+	ret = create_zabbix_host(hostids=params['hostids'][0].split(','),groupid=params['groupid'][0])
+	if len(ret) == len(hostids):
+	    return '1'
+	else:
+	    return json.dumps(ret)	
+	
+    return "500"
+
+@main.route("/resource/server_group", methods=["GET"])
+def resource_server_group():
+    #获取所有的主机
+#    import app.common.monitor
+    servers = api_action("server.get",{})
+    host = []
+    for s in servers:
+	if not s['service_id'] and not s['server_purpose']:
+	    host.append({"value":s['id'],"text": s['hostname']}) 
+    treeview = app.common.monitor.get_treeview_data(idc=False)
+#    print treeview 
+    return render_template("resource/server_hostgroup.html",
+			   treeview=json.dumps(treeview),
+			   host=json.dumps(host))
+
+"""
+    ajax 把机器加到指定分组
+
+"""
+@main.route("/resource/ajax/host_to_hostgroup",methods=['POST'])
+def host_to_hostgroup():
+    params = dict(request.form)
+    print params
+    where = {'id':params['id'][0]}
+    data = {
+	"server_purpose": params['server_purpose'][0],
+	"service_id": params['service_id'][0],
+	"check_update_time": time.strftime("%Y-%m-%d %H:%I:%S", time.localtime(time.time()))
+     }
+    print data
+    ret = api_action("server.update",{"where":where,"data": data})
+    if ret == 1:
+	return str(ret)
+    return "500"
+
+"""
+    ajax 获取分组里的机器
+"""
+@main.route("/resources/ajax/gethostsbyhostgroup",methods=['POST'])
+def get_hosts_bygroup():
+    data = dict(request.form)
+    where = {
+	"server_purpose": data['server_purpose'][0],
+        "service_id": data['service_id'][0],
+	}
+    ret = api_action("server.get",{"where":where})
+    hosts = []
+    for r in ret:
+	hosts.append({"value": r['id'], "text": r['hostname']})
+    return json.dumps(hosts)
+   
+
+"""
+    ajax把机器从分组中删除
+
+"""
+@main.route("/resources/ajax/del_host_from_group", methods=['POST'])
+def del_host_from_group():
+    data = dict(request.form)
+    server_id = data['id'][0]
+    ret = api_action("server.update",{"where":{"id": server_id},"data":{
+        "server_purpose": None,
+        "service_id": None
+	}})
+    if ret == 1:
+	return str(ret)
+    return "500"
+
+"""
+   绑定zabbix模板 
+
+"""
+
+@main.route("/monitor/ajax/link_zabbix_template", methods=['POST'])
+def link_zabbix_template():
+    from app.common.zabbix import link_template
+    if request.method == "POST":
+	#1、获取前端数据
+        params = dict(request.form)
+        #{'hostids': [u'10106'], 'template_ids': [u'10001']}
+	hostids = params['hostids'][0].split(',')
+	template_ids = params['template_ids'][0].split(',')
+	ret_data = link_template(hostids, template_ids)	
+	error = None
+	for r in ret_data:
+	    try:
+		hostids.remove(r['hostids'][0])
+	    except Exception, e:
+		error = e.message
+	if not hostids:
+	    return "1"
+	else:
+	    return error
+    return "500"
+
+"""
+    解绑模板
+
+"""
+@main.route("/monitor/ajax/unlink_zabbix_template", methods=['POST'])
+def unlink_zabbix_template():
+    from app.common.zabbix import zabbix_server
+    if request.method == "POST":
+        #1、获取前端数据
+        params = dict(request.form)
+	hostid = params['hostid'][0]
+	templateid = params['templateid'][0]
+        ret = zabbix_server.unlink_template(hostid, templateid)
+	if ret:
+	    return "1"
+	else:
+	    return json.dumps(ret)
+    return "500" 
+ 
+
+"""
+    维护周期
+"""
+@main.route("/zabbix_maintenance", methods=['GET'])
+def get_zabbix_maintenance():
+    hostlist = []
+    servers = api_action("server.get",{"output":["hostname"]})
+    data = Maintenance.query.all()
+    return render_template("monitor/zabbix_maintenance.html",hostlist=servers,data=data)
+
+"""
+    接收页面传过来的ajax产生，添加维护周期
+"""
+@main.route("/monitor/zabbix/maintenance/add", methods=["POST"])
+def maintenance_add():
+    from app.common.zabbix import zabbix_server
+    from app.common.zabbix import create_maintenance
+    data = dict(request.form)
+    #{'name': [u'mail.shihuasuan.com'], 'time': [u'1']}
+    maintenance_name = data['maintenance_name'][0]
+    hostname = data["name"][0]
+    time_to_go = data["time"][0]
+    time_long = int(time_to_go) * 60 *60 
+    ret = zabbix_server.get_hosts()
+    for host in ret:
+	if hostname == host["host"]:
+	    hostids = host["hostid"]
+	    try:
+	        result = create_maintenance(maintenance_name,hostids,time_long) 
+		result_data = zabbix_server.host_status(hostid=hostids, status="1")
+	    except:
+		return "check your maintenance_name"
+	    update_time = time.strftime("%Y-%m-%d %H:%I:%S", time.localtime(time.time()))
+	    add_data = {"maintenance_name":maintenance_name, "hostname":hostname, "maintenance_time":time_to_go,"update_time":update_time}
+	    obj = Maintenance(**add_data)
+	    db.session.add(obj)
+	    try:
+        	db.session.commit()
+    	    except Exception,e:
+        	raise Exception(e.message.split(")")[1]) 
+	    return "1"
+    return "200"
+
+"""
+    根据页面传过来的信息，删除维护周期
+"""
+@main.route("/maintenance/del/", methods=["GET"])
+def maintenance_del(id=None):
+    try:
+        hostlist = []
+        from app.common.zabbix import zabbix_server 
+        from app.common.zabbix import get_maintenance
+        id = request.args.get("id")
+        data = Maintenance.query.filter(Maintenance.id == id).first()  
+        hostname = data.hostname  
+        ret = zabbix_server.get_hosts()
+        for host in ret:
+	    if hostname == host["host"]:
+	        hostids=host["hostid"]
+	        ret = get_maintenance(hostids)
+                maintenanceid = ret[0]['maintenanceid']
+                ret = zabbix_server.del_maintenance([maintenanceid])
+		result_data = zabbix_server.host_status(hostid=hostids, status="0")
+		print result_data
+		try: 
+	            db.session.query(Maintenance).filter_by(id=id).delete()
+                    db.session.commit()	
+		except Exception,e:
+		    raise e.message
+	        servers = api_action("server.get",{"output":["hostname"]})
+                data = Maintenance.query.all()
+	        return render_template("monitor/zabbix_maintenance.html",hostlist=servers,data=data) 
+        return "200"
+    except:
+	servers = api_action("server.get",{"output":["hostname"]})
+        data = Maintenance.query.all()
+	return render_template("monitor/zabbix_maintenance.html",hostlist=servers,data=data)
+
+@main.route("/get_alerts", methods=["GET"])
+def zabbix_alerts_get():
+    from app.common.zabbix import get_alerts
+    data = {
+        "output": "extend",
+        "actionids": 7
+    }
+    ret = zabbix_server.get_alerts(data)
+    print ret
+    return ""

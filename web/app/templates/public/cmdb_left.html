@@ -40,12 +40,11 @@
                         {% else %}
                         <ul id="systemSetting" class="nav nav-list collapse secondmenu" style="height: 0px;">
                         {% endif %}
-                          <li {% if show_serverlist %}class="active"{% endif %}><a href="/resource/idc"><i class="glyphicon glyphicon-tree-conifer"></i> 机房</a></li>
-                          
-                            <li {% if show_vmlist %}class="active"{% endif %}><a href="/resource/server_list"><i class="glyphicon glyphicon-th-list"></i> 服务器列表</a></li>
-                            <li><a href="#"><i class="glyphicon glyphicon-asterisk"></i> 角色管理</a></li>
-                          <li><a href="#"><i class="glyphicon glyphicon-edit"></i> 修改密码</a></li>
-                          <li><a href="#"><i class="glyphicon glyphicon-eye-open"></i> 日志查看</a></li>
+                            <li class="active"><a href="/resource/idc"><i class="glyphicon glyphicon-tree-conifer"></i> 机房</a></li>
+                            <li><a href="/resource/server_list"><i class="glyphicon glyphicon-th-list"></i> 服务器列表</a></li>
+                            <li><a href="/resource/server_group"><i class="glyphicon glyphicon-asterisk"></i> 业务分组管理</a></li>
+                            <li><a href="#"><i class="glyphicon glyphicon-edit"></i> 修改密码</a></li>
+                            <li><a href="#"><i class="glyphicon glyphicon-eye-open"></i> 日志查看</a></li>
                         </ul>
                     </li>
                     <li>
@@ -63,9 +62,10 @@
                         {% else %}
                         <ul id="test" class="nav nav-list collapse secondmenu" style="height: 0px;">
                         {% endif %}
-                          <li class="active"><a href="/monitor/zabbix/boundtemplate"><i class="glyphicon glyphicon-user"></i>绑定zabbix模板</a></li>
-                          <li><a href="#"><i class="glyphicon glyphicon-th-list"></i> 菜单管理</a></li>
-                          <li><a href="#"><i class="glyphicon glyphicon-asterisk"></i> 角色管理</a></li>
+                          <li class="active"><a href="/monitor/zabbix/index"><i class="glyphicon glyphicon-user"></i>zabbix监控配置</a></li>	
+                          <li class="active"><a href="/zabbix_maintenance"><i class="glyphicon glyphicon-user"></i>zabbix维护周期</a></li>
+                          <li><a href="/monitor/graphite/keys"><i class="glyphicon glyphicon-th-list"></i> graphite key 管理 </a></li>
+                          <li><a href="/monitor/graphite/group_keys"><i class="glyphicon glyphicon-asterisk"></i> graphite group key</a></li>
                           <li><a href="#"><i class="glyphicon glyphicon-edit"></i> 修改密码</a></li>
                           <li><a href="#"><i class="glyphicon glyphicon-eye-open"></i> 日志查看</a></li>
                         </ul>

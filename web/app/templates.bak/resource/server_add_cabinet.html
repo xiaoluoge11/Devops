@@ -1,0 +1,72 @@
+{% extends "public/layout.html" %}
+{% block sidebar %}
+{% endblock %}
+{% block body %}
+<div style="float:left;min-width:800px;margin-left:10px;margin-top:20px;">
+<form action="/resource/server_cabinet_doadd" method='post' class="form-horizontal" role="form" id="cabinet_form">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">添加机柜</label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">机房: </label>
+        <div class="col-xs-4">
+            <select name="idc_id" class="form-control" >
+                <option value='0'>请选择IDC</option>
+                {% for idc in idcs %}
+                <option value="{{ idc.name }}">{{ idc.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">机柜名称: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" name="name" class="form-control" placeholder="请输入机柜名称">
+        </div>
+        <label id="name-error" class="error col-sm-4 control-label"  for="name"></label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">机柜功率: </label>
+        <div class="col-xs-4">
+            <select name="power" class="form-control" >
+                <option value='0'>请选择电源功率</option>
+                {% for power in powers %}
+                <option value="{{ power.server_power }}">{{ power.server_power }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <label id="name-error" class="error col-sm-4 control-label"  for="power"></label>
+    </div>
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn btn-primary">添加</button>
+    </div>
+  </div>
+</form>
+</div>
+{% endblock %}
+{% block js %}
+<script src="/static/js/jquery.validate.min.js"></script>
+<script>
+    $().ready(function() {
+    $("#cabinet_form").validate({
+        rules: {
+            name: {
+                required: true
+            },
+            pwwer:{
+                required: true
+            }
+        },
+        messages: {
+            name: {
+                required: "没有输入制造商名称"
+            },
+            pwwer:{
+                required: "请输入机柜电源功率"
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

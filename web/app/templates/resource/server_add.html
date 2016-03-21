@@ -42,9 +42,6 @@
             <div class="col-xs-4">
                 <select name='server_type' class="form-control" id="servertype">
                 <option value="0">请选择服务器类型</option>
-		 {% for servertype in servertype %}
-                <option value="{{ servertype.id }}">{{ servertype.type }}</option>
-                {% endfor %}
                 </select>
             </div>
             <button type="button" class="btn btn-link">
@@ -105,7 +102,7 @@
                 <select name='cabinet_id' class="form-control" id="cabinet_id">
                 <option value="0">机柜号</option>
                 {% for cabinet in cabinets %}
-                <option value="{{ cabinet.id }}">{{ cabinet.name }}</option>
+                <option value="{{ service.id }}">{{ cabinet.name }}</option>
                 {% endfor %}
                 </select>
             </div>

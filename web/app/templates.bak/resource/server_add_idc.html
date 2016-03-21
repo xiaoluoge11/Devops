@@ -1,0 +1,161 @@
+{% extends "public/layout.html" %}
+{% block sidebar %}
+{% endblock %}
+
+
+{% block body %}
+<div style="float:left;min-width:800px;margin-left:10px;margin-top:20px;">
+<form action="/resource/server_idc_doadd" method='post' class="form-horizontal" role="form" id="addidc_form">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">添加IDC信息</label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">IDC名称: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" name="idc_name" class="form-control" placeholder="请填写IDC名称">
+        </div>
+        <label id="name-idc_name" class="col-sm-4 control-label error"  for="idc_name"></label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">字母缩写: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" name="name" class="form-control" placeholder="请填写字母缩写">
+        </div>
+        <label id="name-name" class="col-sm-4 control-label error"  for="name"></label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">地址: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" name="address" class="form-control" placeholder="请填写详细地址">
+        </div>
+        <label id="name-address" class="col-sm-4 control-label error"  for="address"></label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">客服电话: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" name="phone" class="form-control" placeholder="请填写客服电话">
+        </div>
+        <label id="name-phone" class="col-sm-4 control-label error"  for="phone"></label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">邮件: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" name="email" class="form-control" placeholder="请填写邮件">
+        </div>
+        <label id="name-email" class="col-sm-4 control-label error"  for="email"></label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">IDC接口人: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" name="user_interface" class="form-control" placeholder="请填写IDC接口人">
+        </div>
+        <label id="name-user_interface" class="col-sm-4 control-label error"  for="user_interface"></label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">接口人电话: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" name="user_phone" class="form-control" placeholder="请填写IDC接口人">
+        </div>
+        <label id="name-user_phone" class="col-sm-4 control-label error"  for="user_phone"></label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">实际机柜数: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" name="rel_cabinet_num" class="form-control" placeholder="请填写实际机柜数">
+        </div>
+        <label id="name-rel_cabinet_num" class="col-sm-4 control-label error"  for="rel_cabinet_num"></label>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">合同机柜数: </label>
+        <div class="col-xs-4">
+            <input type="text" autocomplete="off" name="pact_cabinet_num" class="form-control" placeholder="请填写合同机柜数">
+        </div>
+        <label id="name-pact_cabinet_num" class="col-sm-4 control-label error"  for="pact_cabinet_num"></label>
+    </div>
+
+<div class="form-group">
+<div class="col-sm-offset-2 col-sm-10">
+<button type="submit" class="btn btn-primary">添加</button>
+</div>
+</div>
+</form>
+
+
+</div>
+{% endblock %}
+{% block js %}
+<script src="/static/js/jquery.validate.min.js"></script>
+<script>
+    $().ready(function() {
+    $("#addidc_form").validate({
+        rules: {
+            idc_name: {
+                required: true,
+                minlength:2
+            },
+            name:{
+                required: true,
+                minlength:2
+            },
+            address:{
+                required: true,
+                minlength:5
+            },
+            phone:{
+                required: true,
+                minlength:7
+            },
+            email:{
+                required: true,
+					email: true
+            },
+            user_interface:{
+                required: true
+            },
+            user_phone:{
+                required: true
+            },
+            rel_cabinet_num:{
+                required: true
+            },
+            pact_cabinet_num:{
+                required: true
+            }
+        },
+        messages: {
+            idc_name: {
+                required: "没有输入IDC名称",
+                minlength: "请输入至少2个字"
+            },
+            name:{
+                required: "没有输入IDC字母缩写",
+                minlength: "请输入至少2个字"
+            },
+            address:{
+                required: "没有输入IDC具体地址",
+                minlength: "请输入至少5个字"
+            },
+            phone:{
+                required: "没有输入IDC联系电话",
+                minlength: "请输入至少7个字"
+            },
+            email: {
+                required: "请输入email地址"
+            },
+            user_interface:{
+                required: "请输入IDC机房接口人"
+            },
+            user_phone:{
+                required: "请输入机房接口人电话"
+            },
+            rel_cabinet_num:{
+                required: "请输入实际机柜数"
+            },
+            pact_cabinet_num:{
+                required: "请输入合同机柜数"
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

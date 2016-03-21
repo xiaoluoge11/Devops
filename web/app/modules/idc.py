@@ -4,6 +4,7 @@ from app.utils import *
 
 def create(**kwargs):
     check_field_exists(Idc,kwargs)
+    print kwargs
     obj = Idc(**kwargs)
     db.session.add(obj)
     try:

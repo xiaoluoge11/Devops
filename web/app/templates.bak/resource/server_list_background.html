@@ -1,0 +1,75 @@
+{% include "public/header.html" %}
+{% include "public/cmdb_left.html" %}
+<style>
+    .NoNewline {  word-break: keep-all;  }
+</style>
+<div class="right_content">
+    <div class="list_select_button">
+        {% include "public/server_list_type.html" %}
+    </div>
+<br><span style="line-height: 40px;heigth:40px;">共 <strong>{{ num }}</strong> 台物理机</span>
+<div id="tab_box">
+    <table class="table table-hover table-bordered table-condensed">
+      <thead>
+        <tr>
+            <th>#</th>
+            <th>主机名</th>
+            <th>内网IP</th>
+            <th>供应商</th>
+            <th>制造商</th>
+            <th>服务器型号</th>
+            <th>IDC</th>
+            <th>机柜号</th>
+            <th class="NoNewline">位置</th>
+            <th>到保日期</th>
+            <th>出厂日期</th>
+            <th>上架日期</th>
+            <th>RAID卡类型</th>
+            <th>RAID卡型号</th>
+            <th>远程管理卡类型</th>
+            <th>远程管理卡IP</th>
+            <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+
+            {% for server in servers %}
+                <tr>
+                <td> {{ loop.index }} </td>
+                <td> {{ server.hostname }} </td>
+                <td> {{ server.inner_ip }} </td>
+                <td> {{ server.supplier }} </td>
+                <td> {{ server.manufacturers }} </td>
+                <td> {{ server.server_type }} </td>
+                <td> {{ idc[server.idc_id] }} </td>
+                <td> {{ server.cabinet_id }} </td>
+                <td class="NoNewline"> {{ server.cabinet_pos }} </td>
+                <td> {{ server.expire }} </td>
+                <td> {{ server.manufacture_date }} </td>
+                <td> {{ server.server_up_time }} </td>
+                <td> {{ server.raid }} </td>
+                <td> {{ server.raid_card_type }} </td>
+                <td> {{ server.remote_card }} </td>
+                <td> {{ server.remote_cardip }} </td>
+                <td><a href="/resources/server/edit" data="{{ server.id }}" class="server_edit">修改</a></td>
+                </tr>
+            {% endfor %}
+
+      </tbody>
+    </table>
+</div>
+</div>
+{% include "public/footer.html" %}
+<script>
+    $(function(){
+        var height = window.innerHeight * 0.8;
+        $("#tab_box").css('height',height);
+
+        var objAserver_edit = $('.server_edit')
+        objAserver_edit.click(function(){
+            var url = $(this).attr('href') + "?id=" + $(this).attr('data') + "&url=" + window.location.href;
+            $(this).attr('href', url);
+        })
+
+    })
+</script>
