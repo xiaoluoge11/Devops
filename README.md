@@ -8,10 +8,10 @@ CMDB开发已完成。实现半自动化的方式，一些人为信息需要人�
 硬件资产信息每隔10分钟采集一次更新到数据库并展示;
 
 ##zabbix;
-#已完成CMDB同步主机到zabbix;\n
-#zabbix批量模板绑定；\n
-#zabbix 添加维护周期；\n
-#zabbix 获取历史数据;\n
+已完成CMDB同步主机到zabbix;\n
+zabbix批量模板绑定；\n
+zabbix 添加维护周期；\n
+zabbix 获取历史数据;\n
 
 ##graphite;
 根据业务自定义出图，通业务再一组图形前端展示
