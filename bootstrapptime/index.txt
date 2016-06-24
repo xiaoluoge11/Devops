@@ -1,0 +1,48 @@
+<link href="/static/vendor/bootstrap/css/bootstrap-datetimepicker.css" rel="stylesheet">
+<script src="/static/vendor/bootstrap/js/bootstrap-datetimepicker.js"></script>
+<script src="/static/vendor/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+
+#####html#####################
+
+    <div class="control-group">
+        <label class="control-label col-sm-3">机器到保日期：</label>
+        <div class="col-sm-9">
+             <input  type="text" name="expire" id="datetimepicker"
+class="form-control" datatype="*" errormsg="输入字符" />
+        </div>
+    </div> <!--机器到保日期-->
+
+
+
+jquery 插件加载:
+
+<script type="text/javascript">
+    $(function () {
+        $('#datetimepicker').datetimepicker({
+            format: 'hh:ii',
+            startView:1
+        });
+    });
+</script>
+
+
+////显示完全时间到分钟显示所有
+
+显示日期优化：
+
+
+
+########################################
+    $('#datetimepicker').datetimepicker({
+    minView: "month", //选择日期后，不会再跳转去选择时分秒
+　　format: "yyyy-mm-dd", //选择日期后，文本框显示的日期格式
+　　language: 'zh-CN', //汉化
+　　autoclose:true //选择日期后自动关闭
+
+        });
+
+###################################
+
+
+
+
